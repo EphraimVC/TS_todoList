@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import { Database } from "./types/supabase.ts"
-import { supabase} from "./supabaseClient.ts"
+import { addTask } from "./dbHelpers"
 
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
@@ -9,9 +8,9 @@ const removeBtn = document.querySelector("#removeBtn") as HTMLButtonElement
 type Task = { newtask: string, id: string, check: boolean }
 let taskContainer:Task[] = []
 
-newTaskBtn.onclick = () => { 
-  createTask(taskInput.value)
-}
+// newTaskBtn.onclick = () => { 
+//   addTask(taskInput.value)
+// }
 
 function createTask (task:string) { 
   const newTask :Task= {
@@ -49,6 +48,7 @@ createTask("take a shower")
 createTask("sleep")
 
 console.log(taskContainer);
+addTask("tvätta kläder")
 renderList(listWrapper,taskContainer)
 
 
