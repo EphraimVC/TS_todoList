@@ -1,55 +1,41 @@
-import { v4 as uuidv4 } from "uuid"
-import { addTask } from "./dbHelpers"
+import { UUIDTypes, v4 as uuidv4 } from "uuid"
+import { addTask,fetchTask,DbTask } from "./dbHelpers"
 
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
 const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
 const removeBtn = document.querySelector("#removeBtn") as HTMLButtonElement
-type Task = { newtask: string, id: string, check: boolean }
-let taskContainer:Task[] = []
 
-// newTaskBtn.onclick = () => { 
-//   addTask(taskInput.value)
-// }
+newTaskBtn.onclick = () => { 
+  addTask(taskInput.value)
+  taskInput.value = " "
+  renderList(listWrapper)
+}
 
-function createTask (task:string) { 
-  const newTask :Task= {
-    newtask: task,
-    id:uuidv4(),
-    check:false
+
+async function renderList(list: HTMLElement) { 
+  try {
+    const data = await fetchTask()
+    console.log(data);
+    if (data) {
+      return list.innerHTML = data.map((tasks:DbTask) =>
+        `
+      <ul>
+      <li id=${tasks.id}>
+      <input type="checkbox" id="taskCheckBox" >
+      <p>${tasks.tasks}</p>
+      <button id="removeBtn" >Delete</button>
+      </li>
+      </ul>
+      `
+      ).join("")
+    }
+  } catch (error) { 
+    console.error("Fetching tasks error :" , error)
   }
-  taskContainer.push(newTask)
-  renderList(listWrapper, taskContainer)
-  taskInput.value=" "
 }
 
-function removeTask(id: string) {
-  taskContainer = taskContainer.filter(task => task.id !== id)
-  renderList(listWrapper,taskContainer)
-}
- 
-function renderList(list:HTMLElement ,arr:Task[]) { 
-  return list.innerHTML = arr.map((tasks) => (
-    `
-  <ul>
-  <li id=${tasks.id}>
-  <input type="checkbox" id="taskCheckBox" >
-  <p>${tasks.newtask}</p>
-  <button id="removeBtn" >Delete</button>
-  </li>
-  </ul>
-  `
-  )).join("")
-}
-
-createTask("do groceries")
-createTask("papper")
-createTask("take a shower")
-createTask("sleep")
-
-console.log(taskContainer);
-addTask("tvätta kläder")
-renderList(listWrapper,taskContainer)
+renderList(listWrapper)
 
 
 
@@ -58,18 +44,10 @@ renderList(listWrapper,taskContainer)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+// function removeTask(id: string) {
+//   taskContainer = taskContainer.filter(task => task.id !== id)
+//   renderList(listWrapper,taskContainer)
+// }
 
 
 

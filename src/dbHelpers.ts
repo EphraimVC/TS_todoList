@@ -1,12 +1,12 @@
 import { Database } from "./types/supabase.ts"
 import { supabase } from "./supabaseClient.ts"
 
-type DbTask = Database["public"]["Tables"]["tasks"]["Row"]
+export type DbTask = Database["public"]["Tables"]["tasks"]["Row"]
 
-export async function addTask(title:string):Promise<DbTask | null> {
+export async function addTask(tasks:string):Promise<DbTask | null> {
     const { data, error } = await supabase
         .from("tasks")
-        .insert({ title })
+        .insert({ tasks })
         .single();
     
     if (error) { 
@@ -14,4 +14,28 @@ export async function addTask(title:string):Promise<DbTask | null> {
         return null
     }
     return data;
+    
 }
+
+
+export async function fetchTask(): Promise<DbTask[]> {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('created_at', { ascending: true });
+  
+      if (error) {
+        console.error('Error fetching tasks:', error);
+        return [];
+      }
+  
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      return [];
+    }
+  }
+  
+    
