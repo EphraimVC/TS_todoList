@@ -36,6 +36,30 @@ export async function fetchTask(): Promise<DbTask[]> {
       console.error('Unexpected error:', error);
       return [];
     }
-  }
+}
   
-    
+
+export async function updateTaskStatus(id: string, change: boolean | string): Promise<void>{
+  let updatedStatus;
+  typeof change === "string" ?updatedStatus = { tasks: change } : updatedStatus = {is_complete: change}
+
+  const { error } = await supabase
+    .from("tasks")
+    .update(updatedStatus)
+    .eq("id", id);
+  
+  if (error) { 
+    console.error("Error updating task: ", error)
+  }
+}
+
+ 
+export async function deleteTask(id:string):Promise<void> { 
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", id);
+  if (error) { 
+    console.error("Error deleting task :", error);
+  }
+}

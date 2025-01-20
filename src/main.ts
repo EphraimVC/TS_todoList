@@ -1,5 +1,5 @@
-import { UUIDTypes, v4 as uuidv4 } from "uuid"
-import { addTask,fetchTask,DbTask } from "./dbHelpers"
+// import { UUIDTypes, v4 as uuidv4 } from "uuid"
+import { addTask,fetchTask,DbTask,updateTaskStatus,deleteTask } from "./dbHelpers"
 
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
