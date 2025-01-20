@@ -4,13 +4,31 @@ import { addTask,fetchTask,DbTask,updateTaskStatus,deleteTask } from "./dbHelper
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
 const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
-const removeBtn = document.querySelector("#removeBtn") as HTMLButtonElement
 
 newTaskBtn.onclick = () => { 
   addTask(taskInput.value)
   taskInput.value = " "
   renderList(listWrapper)
 }
+document.addEventListener("DOMContentLoaded", () => { 
+  const removeBtn = document.querySelectorAll(".removeBtn")
+
+  removeBtn.forEach(button => { 
+    button.addEventListener("click", (event) => { 
+      event.preventDefault();
+
+      const eventHandler = event.currentTarget as HTMLButtonElement
+      const taskId = eventHandler.getAttribute("data-id")
+      if (taskId) {
+        console.log(taskId);
+        deleteTask(taskId)
+        renderList(listWrapper)
+      } else { 
+        console.error("task id not found")
+      }
+    })
+  })
+})
 
 
 async function renderList(list: HTMLElement) { 
@@ -24,7 +42,7 @@ async function renderList(list: HTMLElement) {
       <li id=${tasks.id}>
       <input type="checkbox" id="taskCheckBox" >
       <p>${tasks.tasks}</p>
-      <button id="removeBtn" >Delete</button>
+      <button class="removeBtn" data-id=${tasks.id}>Delete</button>
       </li>
       </ul>
       `
@@ -37,7 +55,13 @@ async function renderList(list: HTMLElement) {
 
 renderList(listWrapper)
 
-
+// async function removeTask(id:string) { 
+//   try {
+//     deleteTask(id)
+//     renderList(listWrapper)
+//   }
+//   catch (error){console.error(error) }
+// }
 
 
 
