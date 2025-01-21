@@ -1,11 +1,11 @@
 // import { UUIDTypes, v4 as uuidv4 } from "uuid"
 import { addTask,fetchTask,DbTask,updateTaskStatus,deleteTask } from "./dbHelpers"
-
+// ----------------------------------------------------------------------------------------- 
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
 const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
 
-
+// ----------------------------------------------------------------------------------------- 
 async function renderList(list: HTMLElement) { 
   try {
     const data = await fetchTask()
@@ -14,7 +14,7 @@ async function renderList(list: HTMLElement) {
       return list.innerHTML = data.map((tasks:DbTask) =>
         `
       <li id=${tasks.id}>
-      <input type="checkbox" id="taskCheckBox" >
+      <input type="checkbox" id="taskCheckBox" data-status="${tasks.is_complete}" >
       <p>${tasks.tasks}</p>
       <button class="removeBtn" data-id=${tasks.id}>Delete</button>
       </li>
@@ -27,12 +27,15 @@ async function renderList(list: HTMLElement) {
 }
 }
 
+// ----------------------------------------------------------------------------------------- 
 newTaskBtn.onclick = async () => {
   await addTask(taskInput.value);
   taskInput.value = ""; // Reset input field
   await renderList(listWrapper); // Wait for the list to render
   attachRemoveEventListeners(); // Attach event listeners after rendering
 };
+
+// ----------------------------------------------------------------------------------------- 
 
 // Function to attach event listeners to remove buttons
 function attachRemoveEventListeners() {
@@ -49,12 +52,15 @@ function attachRemoveEventListeners() {
     });
   });
 }
-
+// ----------------------------------------------------------------------------------------- 
 // Initialize the app on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
   await renderList(listWrapper); // Render the initial list
   attachRemoveEventListeners(); // Attach event listeners
 });
+
+
+
 
 
 
