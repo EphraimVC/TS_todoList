@@ -63,3 +63,4 @@ export async function deleteTask(id:string):Promise<void> {
     console.error("Error deleting task :", error);
   }
 }
+

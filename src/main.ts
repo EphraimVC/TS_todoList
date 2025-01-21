@@ -5,31 +5,6 @@ const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElem
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
 const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
 
-newTaskBtn.onclick = () => { 
-  addTask(taskInput.value)
-  taskInput.value = " "
-  renderList(listWrapper)
-}
-document.addEventListener("DOMContentLoaded", () => { 
-  const removeBtn = document.querySelectorAll(".removeBtn")
-
-  removeBtn.forEach(button => { 
-    button.addEventListener("click", (event) => { 
-      event.preventDefault();
-
-      const eventHandler = event.currentTarget as HTMLButtonElement
-      const taskId = eventHandler.getAttribute("data-id")
-      if (taskId) {
-        console.log(taskId);
-        deleteTask(taskId)
-        renderList(listWrapper)
-      } else { 
-        console.error("task id not found")
-      }
-    })
-  })
-})
-
 
 async function renderList(list: HTMLElement) { 
   try {
@@ -38,65 +13,50 @@ async function renderList(list: HTMLElement) {
     if (data) {
       return list.innerHTML = data.map((tasks:DbTask) =>
         `
-      <ul>
       <li id=${tasks.id}>
       <input type="checkbox" id="taskCheckBox" >
       <p>${tasks.tasks}</p>
       <button class="removeBtn" data-id=${tasks.id}>Delete</button>
       </li>
-      </ul>
       `
       ).join("")
-    }
-  } catch (error) { 
-    console.error("Fetching tasks error :" , error)
+
   }
+} catch (error) { 
+  console.error("Fetching tasks error :" , error)
+}
 }
 
-renderList(listWrapper)
+newTaskBtn.onclick = async () => {
+  await addTask(taskInput.value);
+  taskInput.value = ""; // Reset input field
+  await renderList(listWrapper); // Wait for the list to render
+  attachRemoveEventListeners(); // Attach event listeners after rendering
+};
 
-// async function removeTask(id:string) { 
-//   try {
-//     deleteTask(id)
-//     renderList(listWrapper)
-//   }
-//   catch (error){console.error(error) }
-// }
+// Function to attach event listeners to remove buttons
+function attachRemoveEventListeners() {
+  const removeBtns = document.querySelectorAll(".removeBtn");
+  console.log(`Number of remove buttons: ${removeBtns.length}`);
+  removeBtns.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const taskId = btn.getAttribute("data-id");
+      if (taskId) {
+        await deleteTask(taskId); // Call delete function
+        await renderList(listWrapper); // Re-render the list
+        attachRemoveEventListeners(); // Re-attach listeners
+      }
+    });
+  });
+}
+
+// Initialize the app on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", async () => {
+  await renderList(listWrapper); // Render the initial list
+  attachRemoveEventListeners(); // Attach event listeners
+});
 
 
 
 
-
-
-// function removeTask(id: string) {
-//   taskContainer = taskContainer.filter(task => task.id !== id)
-//   renderList(listWrapper,taskContainer)
-// }
-
-
-
-// import './style.css'
-// import typescriptLogo from './typescript.svg'
-// import viteLogo from '/vite.svg'
-// import { setupCounter } from './counter.ts'
-
-// document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-//   <div>
-//     <a href="https://vite.dev" target="_blank">
-//       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-//     </a>
-//     <a href="https://www.typescriptlang.org/" target="_blank">
-//       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-//     </a>
-//     <h1>Vite + TypeScript</h1>
-//     <div class="card">
-//       <button id="counter" type="button"></button>
-//     </div>
-//     <p class="read-the-docs">
-//       Click on the Vite and TypeScript logos to learn more
-//     </p>
-//   </div>
-// `
-
-// setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
 
