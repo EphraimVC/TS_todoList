@@ -93,3 +93,7 @@ button:focus-visible {
 li{
   list-style: none;
 }
+
+.hide{
+  display: none;
+}

@@ -1,17 +1,18 @@
 // import { UUIDTypes, v4 as uuidv4 } from "uuid"
-import { addTask,fetchTask,DbTask,updateTaskStatus,deleteTask } from "./dbHelpers"
+import { addTask, fetchTask, DbTask, updateTaskStatus, deleteTask } from "./dbHelpers"
+
 // ----------------------------------------------------------------------------------------- 
 const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
 const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
 const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
 
 // ----------------------------------------------------------------------------------------- 
-async function renderList(list: HTMLElement) { 
+export async function renderList() { 
   try {
     const data = await fetchTask()
     console.log(data);
     if (data) {
-      return list.innerHTML = data.map((tasks:DbTask) =>
+      return listWrapper.innerHTML = data.map((tasks:DbTask) =>
         `
       <li id=${tasks.id}>
       <input type="checkbox" id="taskCheckBox" data-status="${tasks.is_complete}" >
@@ -31,7 +32,7 @@ async function renderList(list: HTMLElement) {
 newTaskBtn.onclick = async () => {
   await addTask(taskInput.value);
   taskInput.value = ""; // Reset input field
-  await renderList(listWrapper); // Wait for the list to render
+  await renderList(); // Wait for the list to render
   attachRemoveEventListeners(); // Attach event listeners after rendering
 };
 
@@ -46,7 +47,7 @@ function attachRemoveEventListeners() {
       const taskId = btn.getAttribute("data-id");
       if (taskId) {
         await deleteTask(taskId); // Call delete function
-        await renderList(listWrapper); // Re-render the list
+        await renderList(); // Re-render the list
         attachRemoveEventListeners(); // Re-attach listeners
       }
     });
@@ -55,14 +56,7 @@ function attachRemoveEventListeners() {
 // ----------------------------------------------------------------------------------------- 
 // Initialize the app on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
-  await renderList(listWrapper); // Render the initial list
+  await renderList(); // Render the initial list
   attachRemoveEventListeners(); // Attach event listeners
 });
-
-
-
-
-
-
-
 
