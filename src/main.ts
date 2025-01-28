@@ -1,12 +1,29 @@
 // import { UUIDTypes, v4 as uuidv4 } from "uuid"
-import { addTask, fetchTask, DbTask, updateTaskStatus, deleteTask } from "./dbHelpers"
-
+import { addTask, fetchTask, DbTask, updateTaskStatus, deleteTask } from "./dbHelpers.ts"
 // ----------------------------------------------------------------------------------------- 
-const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement
-const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
-const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
+const listWrapper = document.querySelector(".taskListContainer")! as HTMLDivElement  
 
+document.addEventListener("DOMContentLoaded", () => { 
+  const taskInput = document.querySelector("#taskInput")! as HTMLInputElement
+  const newTaskBtn = document.querySelector("#createTaskBtn")! as HTMLButtonElement
+  const LogOutBtn = document.querySelector("#logOutBtn")! as HTMLButtonElement
+  if (newTaskBtn && LogOutBtn && taskInput) {
+
+    newTaskBtn.onclick = async () => {
+      await addTask(taskInput.value);
+      taskInput.value = ""; // Reset input field
+      await renderList(); // Wait for the list to render
+      attachRemoveEventListeners(); // Attach event listeners after rendering
+    };
+    
+    LogOutBtn.onclick = () => {
+      localStorage.removeItem("sb-scctkwvgbfovgllwkbqw-auth-token")
+      window.location.assign("/login.html")
+    }
+  }
+})
 // ----------------------------------------------------------------------------------------- 
+
 export async function renderList() { 
   try {
     const data = await fetchTask()
@@ -21,21 +38,10 @@ export async function renderList() {
       </li>
       `
       ).join("")
-
   }
 } catch (error) { 
   console.error("Fetching tasks error :" , error)
-}
-}
-
-// ----------------------------------------------------------------------------------------- 
-newTaskBtn.onclick = async () => {
-  await addTask(taskInput.value);
-  taskInput.value = ""; // Reset input field
-  await renderList(); // Wait for the list to render
-  attachRemoveEventListeners(); // Attach event listeners after rendering
-};
-
+}}
 // ----------------------------------------------------------------------------------------- 
 
 // Function to attach event listeners to remove buttons
@@ -53,10 +59,10 @@ function attachRemoveEventListeners() {
     });
   });
 }
+
 // ----------------------------------------------------------------------------------------- 
 // Initialize the app on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
   await renderList(); // Render the initial list
   attachRemoveEventListeners(); // Attach event listeners
 });
-

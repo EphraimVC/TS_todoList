@@ -1,14 +1,12 @@
-import { supabase } from "./supabaseClient";
-import { renderList } from "./main";
+import { supabase } from "./supabaseClient.ts";
+import { renderList } from "./main.ts";
 
-const emailInput = document.querySelector("#emailInput")! as HTMLInputElement;
+const emailInput = document.querySelector ("#emailInput")! as HTMLInputElement;
 const passwordInput = document.querySelector("#passwordInput")! as HTMLInputElement;
 const loginBtn = document.querySelector("#loginBtn")! as HTMLButtonElement;
 const errorMessage = document.querySelector("#errorMessage")! as HTMLParagraphElement;
-const authForm = document.querySelector(".auth-form")! as HTMLDivElement
-const tasksDisplay = document.querySelector(".task-form")! as HTMLDivElement 
 
- loginBtn.onclick = async () => {
+ async function login () {
     console.log("login btn clicked");
     const email = emailInput.value.trim()
     const password = passwordInput.value.trim()
@@ -29,9 +27,7 @@ const tasksDisplay = document.querySelector(".task-form")! as HTMLDivElement
             errorMessage.textContent = `Login Succesfull \n Welcome ${data.user.email}`
             console.log("logged in user", data.user);
             await renderList()
-            tasksDisplay.classList.remove("hide")
-            authForm.classList.add("hide")
-           
+            window.location.assign("/index.html") 
           
         }
     } catch (error) {
@@ -39,3 +35,13 @@ const tasksDisplay = document.querySelector(".task-form")! as HTMLDivElement
         errorMessage.textContent = "unexpected error occured"
     }
 };
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") { 
+        if (emailInput.value === " " && passwordInput.value === " ") return;
+       login()
+    }
+})
+loginBtn.addEventListener("click", () => {
+       login()
+})
