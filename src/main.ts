@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 })
 // ----------------------------------------------------------------------------------------- 
-
 export async function renderList() { 
   try {
     const data = await fetchTask()
@@ -33,7 +32,7 @@ export async function renderList() {
         `
       <li id=${tasks.id}>
       <input type="checkbox" id="taskCheckBox" data-status="${tasks.is_complete}" >
-      <p>${tasks.tasks}</p>
+      <p contenteditable="false" >${tasks.tasks}</p>
       <button class="removeBtn" data-id=${tasks.id}>Delete</button>
       </li>
       `
@@ -43,7 +42,6 @@ export async function renderList() {
   console.error("Fetching tasks error :" , error)
 }}
 // ----------------------------------------------------------------------------------------- 
-
 // Function to attach event listeners to remove buttons
 function attachRemoveEventListeners() {
   const removeBtns = document.querySelectorAll(".removeBtn");
@@ -59,7 +57,6 @@ function attachRemoveEventListeners() {
     });
   });
 }
-
 // ----------------------------------------------------------------------------------------- 
 // Initialize the app on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
