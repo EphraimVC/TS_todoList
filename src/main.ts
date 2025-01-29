@@ -34,6 +34,7 @@ export async function renderList() {
       <input type="checkbox" id="taskCheckBox" data-status="${tasks.is_complete}" >
       <p contenteditable="false" >${tasks.tasks}</p>
       <button class="removeBtn" data-id=${tasks.id}>Delete</button>
+      <button class="removeBtn" data-id=${tasks.id}>Edit</button>
       </li>
       `
       ).join("")

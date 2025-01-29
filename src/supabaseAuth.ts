@@ -28,8 +28,6 @@ const successMsg = document.querySelector("#successMessage")! as HTMLParagraphEl
             console.log("logged in user", data.user);
             await setTimeout(() => { renderList()
                 window.location.assign("/index.html") },2000)
-            
-           
         }
     } catch (error) {
         console.error("Login error: ", error)
