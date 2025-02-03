@@ -92,4 +92,31 @@ button:focus-visible {
 
 li{
   list-style: none;
+  display: flex;
+  gap: 10px;
+  margin-block: 10px;
+  justify-content: space-between;
+
+}
+.taskListContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  max-height: 20rem;
+  width: fit-content;
+  overflow: scroll;
+  padding-block: 30px;
+}
+
+.task-form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+#createTaskBtn{
+  margin-top: 20px;
 }

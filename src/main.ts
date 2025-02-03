@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 })
+
 // ----------------------------------------------------------------------------------------- 
 export async function renderList() { 
   try {
@@ -30,23 +31,22 @@ export async function renderList() {
     if (data) {
       return listWrapper.innerHTML = data.map((tasks:DbTask) =>
         `
-      <li id=${tasks.id}>
-      <input type="checkbox" id="taskCheckBox" data-status="${tasks.is_complete}" >
-      <p contenteditable="false" >${tasks.tasks}</p>
+      <li class="listItem" id=${tasks.id}>
+      <p id="taskParagraph" contentEditable="false">${tasks.tasks}</p>
       <button class="removeBtn" data-id=${tasks.id}>Delete</button>
-      <button class="removeBtn" data-id=${tasks.id}>Edit</button>
+      <button class="editBtn" data-id=${tasks.id}>Edit</button>
       </li>
       `
       ).join("")
   }
 } catch (error) { 
   console.error("Fetching tasks error :" , error)
-}}
+  }
+}
 // ----------------------------------------------------------------------------------------- 
 // Function to attach event listeners to remove buttons
 function attachRemoveEventListeners() {
   const removeBtns = document.querySelectorAll(".removeBtn");
-  console.log(`Number of remove buttons: ${removeBtns.length}`);
   removeBtns.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const taskId = btn.getAttribute("data-id");
@@ -55,9 +55,37 @@ function attachRemoveEventListeners() {
         await renderList(); // Re-render the list
         attachRemoveEventListeners(); // Re-attach listeners
       }
-    });
+    })   
   });
+  
+  // ----------------------------------------------------------------------------------------- 
+  const editBtn = document.querySelectorAll(".editBtn")
+  editBtn.forEach((edit) => { 
+    const parentLi = edit.closest("li")!
+    const taskTest = parentLi?.querySelector("#taskParagraph")! as HTMLParagraphElement
+    // const taskText = document.querySelector("#taskParagraph")!
+    // const editableStatus = edit.getAttribute("contentEditable") 
+    edit.addEventListener("click", async () => { 
+      const editTaskId = edit.getAttribute("data-id")!
+      const taskValue = taskTest.textContent!
+    
+        if (!taskTest.isContentEditable) {
+          console.log(editTaskId, taskValue);
+          taskTest.contentEditable = "true"
+          edit.textContent = "Save"
+          taskTest.focus()
+          console.log("edit click");
+        }
+        else if (taskTest.isContentEditable) { 
+          updateTaskStatus(editTaskId,taskValue)
+          edit.textContent = "Edit"
+          taskTest.contentEditable = "false"
+          console.log("save click");
+        }
+      } )
+    })
 }
+
 // ----------------------------------------------------------------------------------------- 
 // Initialize the app on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {

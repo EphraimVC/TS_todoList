@@ -16,7 +16,7 @@ const successMsg = document.querySelector("#successMessage")! as HTMLParagraphEl
         errorMessage.textContent = "Please fill in both fields"
         return;
     }
-    try {
+    try { 
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password

@@ -1,8 +1,9 @@
 import { Database } from "./types/supabase.ts"
 import { supabase } from "./supabaseClient.ts"
+import { UUIDTypes } from "uuid";
 
 export type DbTask = Database["public"]["Tables"]["tasks"]["Row"]
-
+// ------------------------------------------------------------------------------- 
 export async function getUserId() {
   const { data: user, error } = await supabase.auth.getUser();
   if (error) {
@@ -11,7 +12,7 @@ export async function getUserId() {
     return user.user.id
   }
 }
-
+// ------------------------------------------------------------------------------- 
 export async function addTask(tasks: string): Promise<DbTask | null> {
   console.log(tasks)
   //vi är inte autentiserade här
@@ -25,46 +26,39 @@ export async function addTask(tasks: string): Promise<DbTask | null> {
         return null
     }
     return data;
-    
 }
-
-
+// ------------------------------------------------------------------------------- 
 export async function fetchTask(): Promise<DbTask[]> {
     try {
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
         .order('created_at', { ascending: true });
-  
       if (error) {
         console.error('Error fetching tasks:', error);
         return [];
       }
-  
-      console.log(data);
       return data;
     } catch (error) {
       console.error('Unexpected error:', error);
       return [];
     }
 }
-  
+ // -------------------------------------------------------------------------------  
 
-export async function updateTaskStatus(id: string, change: boolean | string): Promise<void>{
-  let updatedStatus;
-  typeof change === "string" ?updatedStatus = { tasks: change } : updatedStatus = {is_complete: change}
-
+export async function updateTaskStatus(id: string, change: string): Promise<void> {
   const { error } = await supabase
-    .from("tasks")
-    .update(updatedStatus)
-    .eq("id", id);
-  
+  .from("tasks")
+  .update({tasks:change})
+  .eq("id", id);
   if (error) { 
     console.error("Error updating task: ", error)
   }
+  fetchTask()
 }
 
- 
+
+// -------------------------------------------------------------------------------  
 export async function deleteTask(id: string): Promise<void> { 
   const { error } = await supabase
     .from("tasks")
@@ -72,11 +66,10 @@ export async function deleteTask(id: string): Promise<void> {
     .eq("id", id)
     .eq("user_id", await getUserId()
     )
-    
   if (error) {
     console.error("Error deleting task :", error);
   } else {  
     fetchTask()
   }
 }
- 
+// -------------------------------------------------------------------------------  
